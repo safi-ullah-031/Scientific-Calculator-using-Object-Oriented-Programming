@@ -8,357 +8,128 @@ using namespace std;
 class ScientificCalculator {
 public:
     virtual void performCalculation() = 0;
-};
-
-// Child class 1: SimpleFunctions use to perform simple calculations
-class SimpleFunctions : public ScientificCalculator {   
-public:
-    void performCalculation() {
-        int choice;
-        int numValues;
-        vector<double> values;
-        double result;
-
-        cout << "---------- Simple Functions ----------" << endl;
-        cout << "Enter the number of values you want to perform calculations on: ";
+    void getValues(vector<double> &values, int &numValues) {
+        cout << "Enter the number of values: ";
         cin >> numValues;
-
+        values.resize(numValues);
         for (int i = 0; i < numValues; i++) {
-            double value;
             cout << "Enter value " << i + 1 << ": ";
-            cin >> value;
-            values.push_back(value);
+            cin >> values[i];
         }
-
-        cout << "1. Addition\n";
-        cout << "2. Subtraction\n";
-        cout << "3. Multiplication\n";
-        cout << "4. Division\n";
-        cout << "5. Power\n";
-        cout << "6. Percentage\n";
-        cout << "0. Back to main menu\n";
-        cout << "Enter your choice (0-6): ";
-        cin >> choice;
-
-        switch (choice) {
-            case 1:
-                for (int i = 0; i < numValues; i++) {
-                    result += values[i];
-                }
-                cout << "Result: " << result << endl;
-                break;
-            case 2:
-                if (numValues > 1) {
-                    result = values[0];
-                    for (int i = 1; i < numValues; i++) {
-                        result -= values[i];
-                    }
-                    cout << "Result: " << result << endl;
-                } else {
-                    cout << "Error: Insufficient values for subtraction!" << endl;
-                }
-                break;
-            case 3:
-                for (int i = 0; i < numValues; i++) {
-                    result *= values[i];
-                }
-                cout << "Result: " << result << endl;
-                break;
-            case 4:
-                if (numValues > 1) {
-                    result = values[0];
-                    for (int i = 1; i < numValues; i++) {
-                        if (values[i] != 0) {
-                            result /= values[i];
-                        } else {
-                            cout << "Error: Division by zero!" << endl;
-                            break;
-                        }
-                    }
-                    cout << "Result: " << result << endl;
-                } else {
-                    cout << "Error: Insufficient values for division!" << endl;
-                }
-                break;
-            case 5:
-                if (numValues > 1) {
-                    result = pow(values[0], values[1]);
-                    cout << "Result: " << result << endl;
-                } else {
-                    cout << "Error: Insufficient values for power operation!" << endl;
-                }
-                break;
-            case 6:
-                if (numValues > 1) {
-                    result = (values[0] / 100) * values[1];
-                    cout << "Result: " << result << endl;
-                } else {
-                    cout << "Error: Insufficient values for percentage calculation!" << endl;
-                }
-                break;
-            case 0:
-                cout << "Going back to the main menu..." << endl;
-                break;
-            default:
-                cout << "Invalid choice! Please try again." << endl;
-                break;
-        }
-
-        cout << endl;
     }
 };
 
-// Child class 2: SquaresAndRoots use to perform trignomatic operations
+// Child class 1: Simple Functions
+class SimpleFunctions : public ScientificCalculator {
+public:
+    void performCalculation() override {
+        vector<double> values;
+        int numValues, choice;
+        double result = 0;
+
+        cout << "\n--- Simple Functions ---\n";
+        getValues(values, numValues);
+
+        cout << "1. Addition\n2. Subtraction\n3. Multiplication\n4. Division\n5. Power\n6. Percentage\n0. Back\nEnter choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1: result = accumulate(values.begin(), values.end(), 0.0); break;
+            case 2: result = values[0]; for (int i = 1; i < numValues; i++) result -= values[i]; break;
+            case 3: result = 1; for (double val : values) result *= val; break;
+            case 4:
+                result = values[0];
+                for (int i = 1; i < numValues; i++) {
+                    if (values[i] == 0) { cout << "Error: Division by zero!\n"; return; }
+                    result /= values[i];
+                }
+                break;
+            case 5: result = pow(values[0], values[1]); break;
+            case 6: result = (values[0] / 100) * values[1]; break;
+            case 0: return;
+            default: cout << "Invalid choice!\n"; return;
+        }
+        cout << "Result: " << result << "\n";
+    }
+};
+
+// Child class 2: Squares and Roots
 class SquaresAndRoots : public ScientificCalculator {
 public:
-    void performCalculation() {
-        int choice;
-        int numValues;
+    void performCalculation() override {
         vector<double> values;
-        double result;
+        int numValues, choice;
+        cout << "\n--- Squares and Roots ---\n";
+        getValues(values, numValues);
 
-        cout << "---------- Squares and Roots ----------" << endl;
-        cout << "Enter the number of values you want to perform calculations on: ";
-        cin >> numValues;
-
-        for (int i = 0; i < numValues; i++) {
-            double value;
-            cout << "Enter value " << i + 1 << ": ";
-            cin >> value;
-            values.push_back(value);
-        }
-
-        cout << "1. Square\n";
-        cout << "2. Cube\n";
-        cout << "3. Square Root\n";
-        cout << "4. Cube Root\n";
-        cout << "0. Back to main menu\n";
-        cout << "Enter your choice (0-4): ";
+        cout << "1. Square\n2. Cube\n3. Square Root\n4. Cube Root\n0. Back\nEnter choice: ";
         cin >> choice;
 
-        switch (choice) {
-            case 1:
-                for (int i = 0; i < numValues; i++) {
-                    result = pow(values[i], 2);
-                    cout << "Result for " << values[i] << ": " << result << endl;
-                }
-                break;
-            case 2:
-                for (int i = 0; i < numValues; i++) {
-                    result = pow(values[i], 3);
-                    cout << "Result for " << values[i] << ": " << result << endl;
-                }
-                break;
-            case 3:
-                for (int i = 0; i < numValues; i++) {
-                    if (values[i] >= 0) {
-                        result = sqrt(values[i]);
-                        cout << "Result for " << values[i] << ": " << result << endl;
-                    } else {
-                        cout << "Error: Invalid input! Cannot calculate square root of a negative number." << endl;
-                    }
-                }
-                break;
-            case 4:
-                for (int i = 0; i < numValues; i++) {
-                    result = cbrt(values[i]);
-                    cout << "Result for " << values[i] << ": " << result << endl;
-                }
-                break;
-            case 0:
-                cout << "Going back to the main menu..." << endl;
-                break;
-            default:
-                cout << "Invalid choice! Please try again." << endl;
-                break;
+        for (double val : values) {
+            double result = (choice == 1) ? pow(val, 2) : (choice == 2) ? pow(val, 3) : (choice == 3 && val >= 0) ? sqrt(val) : cbrt(val);
+            cout << "Result for " << val << ": " << result << "\n";
         }
-
-        cout << endl;
     }
 };
 
-// Child class 3: TrigonometricFunctions
+// Child class 3: Trigonometric Functions
 class TrigonometricFunctions : public ScientificCalculator {
 public:
-    void performCalculation() {
-        int choice;
-        int numValues;
+    void performCalculation() override {
         vector<double> values;
-        double result;
+        int numValues, choice;
+        cout << "\n--- Trigonometric Functions ---\n";
+        getValues(values, numValues);
 
-        cout << "---------- Trigonometric Functions ----------" << endl;
-        cout << "Enter the number of values you want to perform calculations on: ";
-        cin >> numValues;
-
-        for (int i = 0; i < numValues; i++) {
-            double value;
-            cout << "Enter value " << i + 1 << ": ";
-            cin >> value;
-            values.push_back(value);
-        }
-
-        cout << "1. Sine\n";
-        cout << "2. Cosine\n";
-        cout << "3. Tangent\n";
-        cout << "4. Cotangent\n";
-        cout << "5. Secant\n";
-        cout << "6. Cosecant\n";
-        cout << "0. Back to main menu\n";
-        cout << "Enter your choice (0-6): ";
+        cout << "1. Sine\n2. Cosine\n3. Tangent\n4. Cotangent\n5. Secant\n6. Cosecant\n0. Back\nEnter choice: ";
         cin >> choice;
 
-        switch (choice) {
-            case 1:
-                for (int i = 0; i < numValues; i++) {
-                    result = sin(values[i] * M_PI / 180);
-                    cout << "Result for " << values[i] << ": " << result << endl;
-                }
-                break;
-            case 2:
-                for (int i = 0; i < numValues; i++) {
-                    result = cos(values[i] * M_PI / 180);
-                    cout << "Result for " << values[i] << ": " << result << endl;
-                }
-                break;
-            case 3:
-                for (int i = 0; i < numValues; i++) {
-                    result = tan(values[i] * M_PI / 180);
-                    cout << "Result for " << values[i] << ": " << result << endl;
-                }
-                break;
-            case 4:
-                for (int i = 0; i < numValues; i++) {
-                    result = 1 / tan(values[i] * M_PI / 180);
-                    cout << "Result for " << values[i] << ": " << result << endl;
-                }
-                break;
-            case 5:
-                for (int i = 0; i < numValues; i++) {
-                    result = 1 / cos(values[i] * M_PI / 180);
-                    cout << "Result for " << values[i] << ": " << result << endl;
-                }
-                break;
-            case 6:
-                for (int i = 0; i < numValues; i++) {
-                    result = 1 / sin(values[i] * M_PI / 180);
-                    cout << "Result for " << values[i] << ": " << result << endl;
-                }
-                break;
-            case 0:
-                cout << "Going back to the main menu..." << endl;
-                break;
-            default:
-                cout << "Invalid choice! Please try again." << endl;
-                break;
+        for (double val : values) {
+            double rad = val * M_PI / 180;
+            double result = (choice == 1) ? sin(rad) : (choice == 2) ? cos(rad) : (choice == 3) ? tan(rad) : (choice == 4) ? 1 / tan(rad) : (choice == 5) ? 1 / cos(rad) : 1 / sin(rad);
+            cout << "Result for " << val << ": " << result << "\n";
         }
-
-        cout << endl;
     }
 };
 
-// Child class 4: LogarithmicFunctions
+// Child class 4: Logarithmic Functions
 class LogarithmicFunctions : public ScientificCalculator {
 public:
-    void performCalculation() {
-        int choice;
-        int numValues;
+    void performCalculation() override {
         vector<double> values;
-        double result;
+        int numValues, choice;
+        cout << "\n--- Logarithmic Functions ---\n";
+        getValues(values, numValues);
 
-        cout << "---------- Logarithmic Functions ----------" << endl;
-        cout << "Enter the number of values you want to perform calculations on: ";
-        cin >> numValues;
-
-        for (int i = 0; i < numValues; i++) {
-            double value;
-            cout << "Enter value " << i + 1 << ": ";
-            cin >> value;
-            values.push_back(value);
-        }
-
-        cout << "1. Natural Logarithm (base e)\n";
-        cout << "2. Common Logarithm (base 10)\n";
-        cout << "0. Back to main menu\n";
-        cout << "Enter your choice (0-2): ";
+        cout << "1. Natural Log (ln)\n2. Common Log (log10)\n0. Back\nEnter choice: ";
         cin >> choice;
 
-        switch (choice) {
-            case 1:
-                for (int i = 0; i < numValues; i++) {
-                    if (values[i] > 0) {
-                        result = log(values[i]);
-                        cout << "Result for " << values[i] << ": " << result << endl;
-                    } else {
-                        cout << "Error: Invalid input! Cannot calculate logarithm of a non-positive number." << endl;
-                    }
-                }
-                break;
-            case 2:
-                for (int i = 0; i < numValues; i++) {
-                    if (values[i] > 0) {
-                        result = log10(values[i]);
-                        cout << "Result for " << values[i] << ": " << result << endl;
-                    } else {
-                        cout << "Error: Invalid input! Cannot calculate logarithm of a non-positive number." << endl;
-                    }
-                }
-                break;
-            case 0:
-                cout << "Going back to the main menu..." << endl;
-                break;
-            default:
-                cout << "Invalid choice! Please try again." << endl;
-                break;
+        for (double val : values) {
+            if (val <= 0) { cout << "Error: Log of non-positive number!\n"; return; }
+            double result = (choice == 1) ? log(val) : log10(val);
+            cout << "Result for " << val << ": " << result << "\n";
         }
-
-        cout << endl;
     }
 };
 
 // Main function
 int main() {
-    int choice;
-
     while (true) {
-        cout << "---------- Scientific Calculator ----------" << endl;
-        cout << "1. Simple Functions\n";
-        cout << "2. Squares and Roots\n";
-        cout << "3. Trigonometric Functions\n";
-        cout << "4. Logarithmic Functions\n";
-        cout << "0. Exit\n";
-        cout << "Enter your choice (0-4): ";
+        int choice;
+        cout << "\n--- Scientific Calculator ---\n";
+        cout << "1. Simple Functions\n2. Squares and Roots\n3. Trigonometric Functions\n4. Logarithmic Functions\n0. Exit\nEnter choice: ";
         cin >> choice;
 
+        ScientificCalculator* calculator = nullptr;
         switch (choice) {
-            case 1: {
-                SimpleFunctions simpleFunctions;
-                simpleFunctions.performCalculation();
-                break;
-            }
-            case 2: {
-                SquaresAndRoots squaresAndRoots;
-                squaresAndRoots.performCalculation();
-                break;
-            }
-            case 3: {
-                TrigonometricFunctions trigonometricFunctions;
-                trigonometricFunctions.performCalculation();
-                break;
-            }
-            case 4: {
-                LogarithmicFunctions logarithmicFunctions;
-                logarithmicFunctions.performCalculation();
-                break;
-            }
-            case 0:
-                cout << "Exiting the program..." << endl;
-                return 0;
-            default:
-                cout << "Invalid choice! Please try again." << endl;
-                break;
+            case 1: calculator = new SimpleFunctions(); break;
+            case 2: calculator = new SquaresAndRoots(); break;
+            case 3: calculator = new TrigonometricFunctions(); break;
+            case 4: calculator = new LogarithmicFunctions(); break;
+            case 0: cout << "Exiting...\n"; return 0;
+            default: cout << "Invalid choice!\n"; continue;
         }
+        calculator->performCalculation();
+        delete calculator;
     }
-
-    return 0;
 }
-
